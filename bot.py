@@ -1,26 +1,18 @@
-import telebot
-import os
-from dotenv import load_dotenv
+import logging
+from aiogram import Bot, Dispatcher
+from aiogram.client.default import DefaultBotProperties
+from aiogram.enums import ParseMode
+from aiogram.fsm.storage.memory import MemoryStorage
+from decouple import config
+from apscheduler.schedulers.asyncio import AsyncIOScheduler
 
-from handlers import register_handlers
+#from db_handler.db_class import MySQLHandler
 
-# Loading environment variables
-dotenv_path = os.path.join(os.path.dirname(__file__), '.env')
-if os.path.exists(dotenv_path):
-	load_dotenv(dotenv_path)
+#mysql_db = MySQLHandler(config('MYSQL_LINK'))
+scheduler = AsyncIOScheduler(timezone = 'Europe/Moscow')
+admins = [int(admin_id) for admin_id in config('ADMINS').split(',')]
 
-
-class RemBot:
-	def __init__(self):
-		# Reading loaded environment variables.
-		BOT_API_TOKEN = os.getenv("BOT_API_TOKEN")
-		if not BOT_API_TOKEN:
-			raise RuntimeError("BOT_API_TOKEN is not set in the environment")
-
-		# Creating bot object
-		self.bot = telebot.TeleBot(BOT_API_TOKEN)
-
-		register_handlers(self.bot)
-
-	def start(self):
-		self.bot.polling()
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+logger = logging.getLogger(__name__)
+bot = Bot(token=config('BOT_API_TOKEN'), defaulr=DefaultBotProperties(parse_mode=ParseMode.HTML))
+dp = Dispatcher(storage=MemoryStorage())
