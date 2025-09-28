@@ -10,7 +10,7 @@ from apscheduler.schedulers.asyncio import AsyncIOScheduler
 
 #mysql_db = MySQLHandler(config('MYSQL_LINK'))
 scheduler = AsyncIOScheduler(timezone = 'Europe/Moscow')
-#admins = [int(admin_id) for admin_id in config('ADMINS').split(',')]
+admins = [int(admin_id) for admin_id in config('ADMINS').split(',')]
 
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
